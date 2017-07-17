@@ -35,7 +35,6 @@ let getSentimentName(sentiment: int) =
 
 let s = sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.Sentiment) |> Array.map(fun (sent, tweets) -> (getSentimentName(sent), tweets |> Array.length)) |> Chart.Pie |> Chart.WithTitle (sprintf "Sentiment By Quantity (%s)" key) |> Chart.WithLegend true
 
-
 let dateByQuantityOptions =
     Options(
         title = "Date By Quantity",
@@ -43,3 +42,6 @@ let dateByQuantityOptions =
     )
 
 sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.CreatedAt.Date) |> Array.map(fun (date, tweets) -> (date, tweets |> Array.length)) |> Chart.Calendar |> Chart.WithOptions dateByQuantityOptions
+
+
+let sk = sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.Sentiment)
