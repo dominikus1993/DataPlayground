@@ -33,7 +33,7 @@ let getSentimentName(sentiment: int) =
     | 2 -> "Bardzo Pozytywny"
     | _ -> "Neutralny"
 
-sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.Sentiment) |> Array.map(fun (sent, tweets) -> (getSentimentName(sent), tweets |> Array.length)) |> Chart.Pie |> Chart.WithTitle (sprintf "Sentiment By Quantity (%s)" key) |> Chart.WithLegend true
+let s = sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.Sentiment) |> Array.map(fun (sent, tweets) -> (getSentimentName(sent), tweets |> Array.length)) |> Chart.Pie |> Chart.WithTitle (sprintf "Sentiment By Quantity (%s)" key) |> Chart.WithLegend true
 
 
 let dateByQuantityOptions =
@@ -42,4 +42,4 @@ let dateByQuantityOptions =
         height = 350
     )
 
-sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.Date) |> Array.map(fun x -> (x.Key, x.Value)) |> Chart.Calendar |> Chart.WithOptions dateByQuantityOptions
+sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.CreatedAt.Date) |> Array.map(fun (date, tweets) -> (date, tweets |> Array.length)) |> Chart.Calendar |> Chart.WithOptions dateByQuantityOptions
