@@ -41,7 +41,21 @@ let dateByQuantityOptions =
         height = 350
     )
 
-sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.CreatedAt.Date) |> Array.map(fun (date, tweets) -> (date, tweets |> Array.length)) |> Chart.Calendar |> Chart.WithOptions dateByQuantityOptions
+let dataByQuantityChart = sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.CreatedAt.Date) |> Array.map(fun (date, tweets) -> (date, tweets |> Array.length)) |> Chart.Calendar |> Chart.WithOptions dateByQuantityOptions
 
+let mostPopularKeyWords = sentimentForFsharp.TweetList
+                            |> Array.toList
+                            |> List.collect(fun x -> x.Key |> Tokenizer.tokenize)
+                            |> Filter.filterOut Constants.stopWords
+                            |> List.filter(fun word -> word.Length > 3)
+                            |> List.groupBy (id)
+                            |> List.sortByDescending(fun (word, words) -> words |> List.length)
+                            |> List.take 10
+                            |> List.map(fun (k ,_) -> k)
+ 
 
-let sk = sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.Sentiment)
+let sk = sentimentForFsharp.TweetList
+            |> Array.map(fun x -> (x.Sentiment, x.Key |> Tokenizer.tokenize |> Filter.filterIn mostPopularKeyWords))
+            |> Array.collect(fun (sentiment, words) -> words |> List.groupBy(id) |> List.map(fun (w, ws) -> (w, getSentimentName(sentiment), ws |> List.length)) |> List.toArray)
+            |> Array.toList
+sk
