@@ -8,19 +8,20 @@
 // run the following in F# Interactive. You can ignore the project
 // (running it doesn't do anything, it just contains this script)
 #load "..\..\packages/FsLab/FsLab.fsx"
+#load "./Utils.fsx"
 
 open Deedle
 open FSharp.Data
 open XPlot.GoogleCharts
 open XPlot.GoogleCharts.Deedle
 open XPlot
+open Utils
 let apiUrl = "http://localhost:5000/api/tweets/"
 type SentimentAnalysisResult = JsonProvider<"http://localhost:5000/api/tweets/fsharp">
 let key = "houseofcards"
 
 let sentimentByKey(key: string) = SentimentAnalysisResult.Load(apiUrl + key)
 let sentimentForFsharp = sentimentByKey(key)
-
 
 
 let getSentimentName(sentiment: int) =
@@ -32,13 +33,13 @@ let getSentimentName(sentiment: int) =
     | 2 -> "Bardzo Pozytywny"
     | _ -> "Neutralny"
 
-let sentimentChart = sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.Sentiment) |> Array.map(fun (sent, tweets) -> (getSentimentName(sent), tweets |> Array.length)) |> Chart.Pie |> Chart.WithTitle (sprintf "Sentiment By Quantity (%s)" key) |> Chart.WithLegend true
+sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.Sentiment) |> Array.map(fun (sent, tweets) -> (getSentimentName(sent), tweets |> Array.length)) |> Chart.Pie |> Chart.WithTitle (sprintf "Sentiment By Quantity (%s)" key) |> Chart.WithLegend true
 
 
-// let dateByQuantityOptions =
-//     Options(
-//         title = "Date By Quantity",
-//         height = 350
-//     )
+let dateByQuantityOptions =
+    Options(
+        title = "Date By Quantity",
+        height = 350
+    )
 
-// sentimentForFsharp.DateByQuantity |> Array.map(fun x -> (x.Key, x.Value)) |> Chart.Calendar |> Chart.WithOptions dateByQuantityOptions
+sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.Date) |> Array.map(fun x -> (x.Key, x.Value)) |> Chart.Calendar |> Chart.WithOptions dateByQuantityOptions
