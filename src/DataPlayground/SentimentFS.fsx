@@ -18,7 +18,7 @@ open XPlot
 open Utils
 let apiUrl = "http://localhost:5000/api/tweets/"
 type SentimentAnalysisResult = JsonProvider<"http://localhost:5000/api/tweets/fsharp">
-let key = "houseofcards"
+let key = "gots7"
 
 let sentimentByKey(key: string) = SentimentAnalysisResult.Load(apiUrl + key)
 let sentimentForFsharp = sentimentByKey(key)
@@ -45,7 +45,7 @@ let dataByQuantityChart = sentimentForFsharp.TweetList |> Array.groupBy(fun x ->
 
 let mostPopularKeyWords = sentimentForFsharp.TweetList
                             |> Array.toList
-                            |> List.collect(fun x -> x.Key |> Tokenizer.tokenize)
+                            |> List.collect(fun x -> x.Text |> Tokenizer.tokenize)
                             |> Filter.filterOut Constants.stopWords
                             |> List.filter(fun word -> word.Length > 3)
                             |> List.groupBy (id)
@@ -53,9 +53,10 @@ let mostPopularKeyWords = sentimentForFsharp.TweetList
                             |> List.take 10
                             |> List.map(fun (k ,_) -> k)
  
-
 let sk = sentimentForFsharp.TweetList
-            |> Array.map(fun x -> (x.Sentiment, x.Key |> Tokenizer.tokenize |> Filter.filterIn mostPopularKeyWords))
-            |> Array.collect(fun (sentiment, words) -> words |> List.groupBy(id) |> List.map(fun (w, ws) -> (w, getSentimentName(sentiment), ws |> List.length)) |> List.toArray)
             |> Array.toList
-sk
+            |> List.map(fun x -> (x.Sentiment, x.Text |> Tokenizer.tokenize |> Filter.filterIn mostPopularKeyWords))
+            |> List.collect(fun (sentiment, words) -> words |> List.groupBy(id) |> List.map(fun (w, ws) -> (w, getSentimentName(sentiment), ws |> List.length)))
+            |> Chart.Sankey
+            |> Chart.WithHeight 300
+            |> Chart.WithWidth 600
