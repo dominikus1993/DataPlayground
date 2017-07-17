@@ -13,11 +13,15 @@ open Deedle
 open FSharp.Data
 open XPlot.GoogleCharts
 open XPlot.GoogleCharts.Deedle
+open XPlot
+let apiUrl = "http://localhost:5000/api/tweets/"
+type SentimentAnalysisResult = JsonProvider<"http://localhost:5000/api/tweets/fsharp">
+let key = "houseofcards"
 
-let apiUrl = "http://localhost:5000/api/analysis/"
-type SentimentAnalysisResult = JsonProvider<"http://localhost:5000/api/analysis/java">
+let sentimentByKey(key: string) = SentimentAnalysisResult.Load(apiUrl + key)
+let sentimentForFsharp = sentimentByKey(key)
 
-let sentimentForFsharp = SentimentAnalysisResult.Load(apiUrl + "java")
+
 
 let getSentimentName(sentiment: int) =
     match sentiment with
@@ -28,16 +32,13 @@ let getSentimentName(sentiment: int) =
     | 2 -> "Bardzo Pozytywny"
     | _ -> "Neutralny"
 
-let sentimentChart = sentimentForFsharp.SentimentByQuantity |> Array.map(fun x -> (getSentimentName(x.Key), x.Value)) |> Chart.Pie |> Chart.WithTitle "Sentiment By Quantity (houseofcards)" |> Chart.WithLegend true
+let sentimentChart = sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.Sentiment) |> Array.map(fun (sent, tweets) -> (getSentimentName(sent), tweets |> Array.length)) |> Chart.Pie |> Chart.WithTitle (sprintf "Sentiment By Quantity (%s)" key) |> Chart.WithLegend true
 
 
-let wordCloud =
-    Options(
-        title = "Kewords",
-        hAxis = Axis(title = "0y"),
-        vAxis = Axis(title = "Fertility Rate"),
-        bubble = Bubble(textStyle = TextStyle(fontSize = 11))
-    )
+// let dateByQuantityOptions =
+//     Options(
+//         title = "Date By Quantity",
+//         height = 350
+//     )
 
-//let options = Options(showTip = true)
-//let locations = sentimentForFsharp.Localizations |> Array.map(fun x -> (x.Latitude.ToString(), x.Longitude.ToString())) |> Chart.Map |> Chart.WithOptions options |> Chart.WithHeight 420
+// sentimentForFsharp.DateByQuantity |> Array.map(fun x -> (x.Key, x.Value)) |> Chart.Calendar |> Chart.WithOptions dateByQuantityOptions
