@@ -17,6 +17,8 @@ open XPlot.GoogleCharts.Deedle
 open XPlot
 open Utils
 let apiUrl = "http://localhost:5000/api/tweets/"
+let googleGeoCodeApiUrl lat long = sprintf "https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=%s" lat long (System.Environment.GetEnvironmentVariable("GoogleApiKey"))
+type GoogleGeoData = JsonProvider<"./google.json">
 type SentimentAnalysisResult = JsonProvider<"http://localhost:5000/api/tweets/fsharp">
 let key = "gots7"
 
