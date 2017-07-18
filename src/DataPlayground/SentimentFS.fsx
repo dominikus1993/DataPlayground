@@ -25,15 +25,9 @@ let key = "java"
 let sentimentByKey(key: string) = SentimentAnalysisResult.Load(apiUrl + key)
 let sentimentForFsharp = sentimentByKey(key)
 
-
-let getSentimentName(sentiment: int) =
-    match sentiment with
-    | -2 -> "Bardzo Negatywny"
-    | -1 -> "Negatywny"
-    | 0 -> "Neutralny"
-    | 1 -> "Pozytywny"
-    | 2 -> "Bardzo Pozytywny"
-    | _ -> "Neutralny"
+let sentiments = ["Bardzo Negatywny"; "Negatywny"; "Neutralny"; "Pozytywny"; "Bardzo Pozytywny"]
+let getSentimentName(sentimentI: int) =
+    sentiments.[sentimentI + 2]
 
 let s = sentimentForFsharp.TweetList |> Array.groupBy(fun x -> x.Sentiment) |> Array.map(fun (sent, tweets) -> (getSentimentName(sent), tweets |> Array.length)) |> Chart.Pie |> Chart.WithTitle (sprintf "Sentiment By Quantity (%s)" key) |> Chart.WithLegend true
 
@@ -80,3 +74,7 @@ let geoData = sentimentForFsharp.TweetList
 
 let geoChart = Chart.Geo(geoData, Labels=["Name"; "Popularity"])
 
+let dateCambo = sentimentForFsharp.TweetList 
+                    |> Array.groupBy(fun tweet -> tweet.Sentiment)
+                    |> Array.sortByDescending(fun (s, _) -> s)
+                    |> Array.map(fun (sentiment, tweets) -> tweets |> Array.groupBy(fun x -> x.CreatedAt.Date) |> Array.map(fun (date, tweets) -> (date, tweets |> Array.length)))
