@@ -17,7 +17,7 @@ open XPlot.GoogleCharts.Deedle
 open XPlot
 open Utils
 let apiUrl = "http://localhost:5000/api/tweets/"
-let googleGeoCodeApiUrl (lat: float) (long: float) = sprintf "https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=%s" lat long (System.Environment.GetEnvironmentVariable("GoogleApiKey"))
+let googleGeoCodeApiUrl (lat: float) (lng: float) = sprintf "https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=%s" lat lng (System.Environment.GetEnvironmentVariable("GoogleApiKey"))
 type GoogleGeoData = JsonProvider<"../../google.json">
 type SentimentAnalysisResult = JsonProvider<"http://localhost:5000/api/tweets/java">
 let key = "java"
@@ -65,16 +65,18 @@ let sk = sentimentForFsharp.TweetList
 
 
 
-let loadGeoData long lat = 
-    let res = GoogleGeoData.Load(googleGeoCodeApiUrl(long)(lat))
+let loadGeoData lat lng = 
+    let res = GoogleGeoData.Load(googleGeoCodeApiUrl(lat)(lng))
     res.Results |> Array.collect(fun res -> res.AddressComponents) |> Array.filter(fun ac -> ac.Types |> Array.exists(fun tp -> tp = "country")) |> Array.head
 
 
 let geoData = sentimentForFsharp.TweetList
                 |> Array.filter(fun tweet -> tweet.Longitude <> 0m || tweet.Latitude <> 0m)
-                |> Array.map(fun tweet -> ((loadGeoData (tweet.Longitude |> float) (tweet.Latitude |> float)).ShortName.String), 1)
+                |> Array.map(fun tweet -> ((loadGeoData (tweet.Latitude |> float) (tweet.Longitude |> float)).ShortName.String), 1)
                 |> Array.filter(fun (name, _) -> match name with Some _ -> true | None -> false)
                 |> Array.map(fun (name, value) -> (name.Value, value))
+                |> Array.groupBy(fun (name, value) -> name)
+                |> Array.map(fun (name, rest) -> (name, rest |> Array.sumBy(fun (_, value) -> value)))
 
 let geoChart = Chart.Geo(geoData, Labels=["Name"; "Popularity"])
 
