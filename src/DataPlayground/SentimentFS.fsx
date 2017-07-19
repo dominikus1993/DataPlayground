@@ -20,7 +20,7 @@ let apiUrl = "http://localhost:5000/api/tweets/"
 let googleGeoCodeApiUrl (lat: float) (lng: float) = sprintf "https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=%s" lat lng (System.Environment.GetEnvironmentVariable("GoogleApiKey"))
 type GoogleGeoData = JsonProvider<"../../google.json">
 type SentimentAnalysisResult = JsonProvider<"http://localhost:5000/api/tweets/java">
-let key = "java"
+let key = "fsharp"
 
 let sentimentByKey(key: string) = SentimentAnalysisResult.Load(apiUrl + key)
 let sentimentForFsharp = sentimentByKey(key)
@@ -76,5 +76,23 @@ let geoChart = Chart.Geo(geoData, Labels=["Name"; "Popularity"])
 
 let dateCambo = sentimentForFsharp.TweetList 
                     |> Array.groupBy(fun tweet -> tweet.Sentiment)
-                    |> Array.sortByDescending(fun (s, _) -> s)
-                    |> Array.map(fun (sentiment, tweets) -> tweets |> Array.groupBy(fun x -> x.CreatedAt.Date) |> Array.map(fun (date, tweets) -> (date, tweets |> Array.length)))
+                    |> Array.sortBy(fun (s, _) -> s)
+                    |> Array.map(fun (sentiment, tweets) -> tweets |> Array.groupBy(fun x -> x.CreatedAt.Date) |> Array.map(fun (date, tweets) -> (date.ToShortDateString(), tweets |> Array.length)))
+
+
+let options =
+    Options(
+        title = "Sentiment By Date",
+        hAxis =
+            Axis(
+                title = "Day",
+                titleTextStyle = TextStyle(color = "red")
+            )
+    )
+
+let sentimentByDate = 
+    dateCambo
+        |> Chart.Column
+        |> Chart.WithOptions options
+        |> Chart.WithLabels sentiments
+ 
