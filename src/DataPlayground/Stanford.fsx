@@ -11,20 +11,9 @@ open edu.stanford.nlp.sentiment
 open edu.stanford.nlp.trees
 open edu.stanford.nlp.util
 
-// Path to the folder with models extracted from `stanford-corenlp-3.7.0-models.jar`
-let jarRoot = @"..\..\data\models"
+let jarRoot = __SOURCE_DIRECTORY__ + @"..\..\..\data\models"
 
 printfn "root: %A" jarRoot
-
-open System
-open System.IO
-open edu.stanford.nlp.ling
-open edu.stanford.nlp.neural.rnn
-open edu.stanford.nlp.sentiment
-open edu.stanford.nlp.trees
-open edu.stanford.nlp.util
-open java.util
-open edu.stanford.nlp.pipeline
 
 let classForType<'t> =
     java.lang.Class.op_Implicit typeof<'t>

@@ -5,4 +5,5 @@
 #r "..\..\packages\Microsoft.VisualStudio.Shell.14.0\lib\Microsoft.VisualStudio.Shell.14.0.dll"
 #r "..\..\packages\IKVM\lib\IKVM.OpenJDK.Core.dll"
 #r "..\..\packages\IKVM\lib\IKVM.OpenJDK.Util.dll"
+#r "..\..\packages\Stanford.NLP.CoreNLP\lib\ejml-0.23.dll"
 #r "..\..\packages\Stanford.NLP.CoreNLP\lib\stanford-corenlp-3.7.0.dll"
