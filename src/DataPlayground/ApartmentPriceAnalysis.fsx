@@ -18,3 +18,4 @@ type Offers = HtmlProvider<"https://dom.gratka.pl/mieszkania-do-wynajecia/lista/
 
 
 
+#r "paket: Stanford.NLP.CoreNLP >= 3.7.0.1"
