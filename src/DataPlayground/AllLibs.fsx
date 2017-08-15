@@ -1,0 +1,8 @@
+#load "..\..\packages\FsLab\FsLab.fsx"
+#r "..\..\packages\IKVM\lib\IKVM.OpenJDK.Text.dll"
+#r "..\..\packages\Microsoft.VisualStudio.Shell.Framework\lib\\net45\Microsoft.VisualStudio.Shell.Framework.dll"
+#r "..\..\packages\Microsoft.VisualStudio.Shell.Immutable.10.0\lib\\net40\Microsoft.VisualStudio.Shell.Immutable.10.0.dll"
+#r "..\..\packages\Microsoft.VisualStudio.Shell.14.0\lib\Microsoft.VisualStudio.Shell.14.0.dll"
+#r "..\..\packages\IKVM\lib\IKVM.OpenJDK.Core.dll"
+#r "..\..\packages\IKVM\lib\IKVM.OpenJDK.Util.dll"
+#r "..\..\packages\Stanford.NLP.CoreNLP\lib\stanford-corenlp-3.7.0.dll"

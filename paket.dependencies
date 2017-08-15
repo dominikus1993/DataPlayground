@@ -2,3 +2,6 @@ source https://www.nuget.org/api/v2
 nuget FAKE
 nuget FsLab
 nuget Stanford.NLP.CoreNLP
+nuget Stanford.NLP.Parser
+nuget Stanford.NLP.Parser.Fsharp
+nuget Microsoft.VisualStudio.Shell.14.0
