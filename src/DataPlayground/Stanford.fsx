@@ -12,8 +12,9 @@ open edu.stanford.nlp.trees
 open edu.stanford.nlp.util
 
 // Path to the folder with models extracted from `stanford-corenlp-3.7.0-models.jar`
-let jarRoot = __SOURCE_DIRECTORY__ + @"..\..\..\data\models"
+let jarRoot = @"..\..\data\models"
 
+printfn "root: %A" jarRoot
 
 open System
 open System.IO
