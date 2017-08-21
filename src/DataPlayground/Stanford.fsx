@@ -10,6 +10,11 @@ open edu.stanford.nlp.neural.rnn
 open edu.stanford.nlp.sentiment
 open edu.stanford.nlp.trees
 open edu.stanford.nlp.util
+open Deedle
+open FSharp.Data
+open XPlot.GoogleCharts
+open XPlot.GoogleCharts.Deedle
+open XPlot
 
 let jarRoot = __SOURCE_DIRECTORY__ + @"..\..\..\data\models"
 
@@ -32,7 +37,8 @@ let classToSentiment = function
     | 3 -> Positive
     | 4 -> VeryPositive
     | _ -> failwith "unknown class"
-    
+
+
 let makeSentimentAnalyzer modelsDir =
     let props = Properties()
     props.setProperty("annotators", "tokenize, ssplit, pos, parse, sentiment") |> ignore
@@ -49,10 +55,22 @@ let makeSentimentAnalyzer modelsDir =
             |> Seq.cast<Tree>
             |> Seq.map (RNNCoreAnnotations.getPredictedClass >> classToSentiment)
             |> Seq.toList
-            
-let text = "awesome great this text is so exciting! this is disgusting sentence number two.";
+
 
 let sentimentAnalyzer = makeSentimentAnalyzer jarRoot
 
-sentimentAnalyzer text
+let sentimentToString = function
+   | VeryNegative -> "VeryNegative"
+   | Negative -> "Negative"
+   | Neutral -> "Neutral"
+   | Positive -> "Positive"
+   | VeryPositive -> "VeryPositive"
+
+let sentiments = Directory.GetFiles("""D:\reviews\txt_sentoken\pos""") 
+                                    |> Array.collect(File.ReadAllText >> sentimentAnalyzer >> List.toArray)
+                                    |> Array.groupBy(id)
+                                    |> Array.map(fun (x, xs) -> (x |> sentimentToString, xs |> Array.length))
+                                    |> Chart.Pie
+      
+
 
