@@ -1,8 +1,12 @@
 source https://www.nuget.org/api/v2
+source https://www.myget.org/F/sentimentfs/api/v2
 nuget FAKE
 nuget FsLab
+nuget Chiron
 nuget Stanford.NLP.CoreNLP
 nuget Stanford.NLP.Parser
 nuget Stanford.NLP.Parser.Fsharp
 nuget Stanford.NLP.POSTagger
 nuget Microsoft.VisualStudio.Shell.14.0
+nuget SentimentFS.Stemmer
+nuget SentimentFS.TextUtilities >= 0.6.0
